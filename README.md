@@ -55,6 +55,20 @@ It's possible to change the dataset use for training the data. The steps are as 
 3. Alternatively, traing and val data can be changed from the appropriate modelscript in ``train_scripts/`` folder.
 4. Run with the new modified dataset.
 
+## Dataset Structure
+
+To avoid storage redundancy, we store one single input array for both pristine- and clear-sky conditions. The dimensions of ClimART’s input arrays are:
+
+• layers: (N,Slay,Dlay) 
+• levels: (N,Slev,Dlev)
+• globals: (N,Dglob)
+
+where N is the data dimensions (i.e. the number of examples of a specific year), Slay and Slev are the number of layers and levels in a column respectively (49 and 50 in this case), and Dlay, Dlev, Dglob is the number of features/channels for layers, levels, globals respectively. 
+
+For both pristine-sky and clear-sky conditions, we have that Dlev = 4 and Dglob = 82, while Dlay = 14 for pristine-sky, and Dlay = 45 for clear-sky conditions. The array for pristine-sky conditions can be easily accessed by slicing the first 14 features out of the stored array, e.g.:
+
+```      pristine_array = layers_array[:, :, : 14] ```
+
 ## Training Options
 
 ```
