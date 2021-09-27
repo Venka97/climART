@@ -7,7 +7,6 @@ from typing import Optional, Dict
 GLOBALS = "globals"
 LAYERS = "layers"
 LEVELS = "levels"
-OUTPUT = "output"  # todo: remove
 INPUTS = 'inputs'
 PRISTINE = 'pristine'
 CLEAR_SKY = 'clear_sky'

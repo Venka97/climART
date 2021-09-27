@@ -1,11 +1,8 @@
 import os
 
 import torch
-import wandb
-import pandas as pd
-
 from main import main
-from rtml.utils.hyperparams_and_args import get_argparser
+from climart.utils.hyperparams_and_args import get_argparser
 
 ckpt_dir = "/home/mila/s/salva.ruhling-cachay/RT-DL/scripts/out"
 checkpoints = [

@@ -10,11 +10,11 @@ import numpy as np
 import torch
 from torch import Tensor
 
-from rtml.data_wrangling.constants import LEVELS, LAYERS, GLOBALS, EXP_TYPES, get_metadata
-from rtml.data_wrangling import constants
-from rtml.utils.callbacks import PredictionPostProcessCallback
-from rtml.utils.preprocessing import get_normalizer, Normalizer
-from rtml.utils.utils import get_logger, identity, get_target_variable_names
+from climart.data_wrangling.constants import LEVELS, LAYERS, GLOBALS, EXP_TYPES, get_metadata
+from climart.data_wrangling import constants
+from climart.utils.callbacks import PredictionPostProcessCallback
+from climart.utils.preprocessing import get_normalizer, Normalizer
+from climart.utils.utils import get_logger, identity, get_target_variable_names
 
 NP_ARRAY_MAPPING = Callable[[np.ndarray], np.ndarray]
 

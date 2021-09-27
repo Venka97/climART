@@ -8,11 +8,11 @@ from torch import Tensor
 
 from einops import rearrange, repeat
 
-from rtml.data_wrangling.constants import LEVELS, LAYERS, GLOBALS
-from rtml.models.base_model import BaseModel, BaseTrainer
-from rtml.models.column_handler import ColumnPreprocesser
-from rtml.utils.utils import get_activation_function, get_normalization_layer
-from rtml.models.additional_layers import Multiscale_Module, GAP, SE_Block
+from climart.data_wrangling.constants import LEVELS, LAYERS, GLOBALS
+from climart.models.base_model import BaseModel, BaseTrainer
+from climart.models.column_handler import ColumnPreprocesser
+from climart.utils.utils import get_activation_function, get_normalization_layer
+from climart.models.additional_layers import Multiscale_Module, GAP, SE_Block
 
 
 class CNN_Net(BaseModel):

@@ -8,9 +8,9 @@ import h5py
 import numpy as np
 import xarray as xr
 
-from rtml.data_wrangling.data_variables import reorder_input_variables
-from rtml.data_wrangling.constants import LEVELS, LAYERS, GLOBALS, EXP_TYPES
-from rtml.utils.utils import get_logger
+from climart.data_wrangling.data_variables import reorder_input_variables
+from climart.data_wrangling.constants import LEVELS, LAYERS, GLOBALS, EXP_TYPES
+from climart.utils.utils import get_logger
 
 NP_ARRAY_MAPPING = Callable[[np.ndarray], np.ndarray]
 log = get_logger(__name__)

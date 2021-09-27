@@ -7,9 +7,9 @@ import numpy as np
 import torch
 import torch.nn as nn
 import torch_scatter
-from rtml.models.MLP import MLPNet
-import rtml.models.GNs.constants as gn_constants
-from rtml.models.GNs.constants import GraphComponentToTensor, AggregationTypes, NODES, EDGES, GLOBALS
+from climart.models.MLP import MLPNet
+import climart.models.GNs.constants as gn_constants
+from climart.models.GNs.constants import GraphComponentToTensor, AggregationTypes, NODES, EDGES, GLOBALS
 
 
 class GraphNetBlock(nn.Module):

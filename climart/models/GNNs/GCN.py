@@ -8,12 +8,12 @@ from torch import Tensor
 import networkx as nx
 import matplotlib.pyplot as plt
 import seaborn as sns
-from rtml.models.GNNs.structure_learner import EdgeStructureLearner
-from rtml.models.MLP import MLPNet
-from rtml.models.base_model import BaseModel, BaseTrainer
-from rtml.models.GNNs.graph_conv_layer import GraphConvolution
-from rtml.models.column_handler import ColumnPreprocesser
-from rtml.utils.utils import get_activation_function, adj_to_edge_indices
+from climart.models.GNNs.structure_learner import EdgeStructureLearner
+from climart.models.MLP import MLPNet
+from climart.models.base_model import BaseModel, BaseTrainer
+from climart.models.GNNs.graph_conv_layer import GraphConvolution
+from climart.models.column_handler import ColumnPreprocesser
+from climart.utils.utils import get_activation_function, adj_to_edge_indices
 
 
 class GCN(BaseModel):

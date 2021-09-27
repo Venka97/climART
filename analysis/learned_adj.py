@@ -1,9 +1,9 @@
 import torch
 
-from rtml.data_wrangling.constants import get_data_dims, LAYERS
-from rtml.models.column_handler import ColumnPreprocesser
-from rtml.models.interface import get_model
-from rtml.utils.postprocessing import restore_ckpt_from_wandb
+from climart.data_wrangling.constants import get_data_dims, LAYERS
+from climart.models.column_handler import ColumnPreprocesser
+from climart.models.interface import get_model
+from climart.utils.postprocessing import restore_ckpt_from_wandb
 
 run_id = "3n1if6lg"
 saved_model = restore_ckpt_from_wandb(run_id, run_path="ecc-mila7/RT+ML_Dataset_paper", load=True)

@@ -6,7 +6,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 
 from torch import Tensor
-from rtml.models.MLP import MLPNet
+from climart.models.MLP import MLPNet
 
 
 class Multiscale_Module(nn.Module):

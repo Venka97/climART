@@ -1,21 +1,19 @@
 import logging
-
-# Training settings
 from functools import partial
 
 import wandb
 import torch
 from torch.utils.data import DataLoader
 
-from rtml.data_wrangling.constants import TEST_YEARS, LAYERS, get_flux_mean, OOD_PRESENT_YEARS, TRAIN_YEARS, \
+from climart.data_wrangling.constants import TEST_YEARS, LAYERS, get_flux_mean, OOD_PRESENT_YEARS, TRAIN_YEARS, \
     GLOBALS, LEVELS, PRISTINE, get_data_dims
-from rtml.data_wrangling.h5_dataset import RT_HdF5_Dataset
-from rtml.models.column_handler import ColumnPreprocesser
-from rtml.models.interface import get_trainer, is_gnn, is_graph_net, get_model, get_input_transform
+from climart.data_wrangling.h5_dataset import RT_HdF5_Dataset
+from climart.models.column_handler import ColumnPreprocesser
+from climart.models.interface import get_trainer, is_gnn, is_graph_net, get_model, get_input_transform
 
-from rtml.utils.hyperparams_and_args import get_argparser
-from rtml.utils.preprocessing import Normalizer
-from rtml.utils.utils import set_seed, year_string_to_list, get_logger, get_target_variable, get_target_types
+from climart.utils.hyperparams_and_args import get_argparser
+from climart.utils.preprocessing import Normalizer
+from climart.utils.utils import set_seed, year_string_to_list, get_logger, get_target_variable, get_target_types
 
 torch.set_printoptions(sci_mode=False)
 log = get_logger(__name__)

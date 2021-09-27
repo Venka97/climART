@@ -5,10 +5,10 @@ import torch
 from torch import Tensor
 from einops import repeat
 
-from rtml.models.GNs.constants import NODES, EDGES
-from rtml.data_wrangling.constants import LAYERS, LEVELS, GLOBALS
-from rtml.models.additional_layers import FeatureProjector
-from rtml.utils.utils import normalize_adjacency_matrix_torch, identity, get_logger
+from climart.models.GNs.constants import NODES, EDGES
+from climart.data_wrangling.constants import LAYERS, LEVELS, GLOBALS
+from climart.models.additional_layers import FeatureProjector
+from climart.utils.utils import normalize_adjacency_matrix_torch, identity, get_logger
 
 log = get_logger(__name__)
 

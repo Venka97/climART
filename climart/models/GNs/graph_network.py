@@ -5,11 +5,11 @@ import torch
 import torch.nn as nn
 from torch import Tensor
 
-from rtml.models.GNs.constants import AggregationTypes, NODES, EDGES, GLOBALS, GRAPH_COMPONENTS, SPATIAL_DIM
-from rtml.models.GNs.graph_network_block import GraphNetBlock
-from rtml.models.MLP import MLPNet
-from rtml.models.base_model import BaseModel, BaseTrainer
-from rtml.models.column_handler import ColumnPreprocesser
+from climart.models.GNs.constants import AggregationTypes, NODES, EDGES, GLOBALS, GRAPH_COMPONENTS, SPATIAL_DIM
+from climart.models.GNs.graph_network_block import GraphNetBlock
+from climart.models.MLP import MLPNet
+from climart.models.base_model import BaseModel, BaseTrainer
+from climart.models.column_handler import ColumnPreprocesser
 
 
 class GraphNetwork(BaseModel):

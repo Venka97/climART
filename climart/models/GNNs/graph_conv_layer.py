@@ -3,7 +3,7 @@ import math
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-from rtml.utils.utils import get_normalization_layer
+from climart.utils.utils import get_normalization_layer
 
 
 class GraphConvolution(nn.Module):

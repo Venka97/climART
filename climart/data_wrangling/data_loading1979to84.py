@@ -10,11 +10,11 @@ import xarray as xr
 import numpy as np
 from tqdm import tqdm
 
-from rtml.data_wrangling.constants import INPUT_RAW_SUBDIR, DATA_CREATION_SEED
-from rtml.data_wrangling.data_variables import get_all_vars, input_variables_to_drop_for_exp, \
+from climart.data_wrangling.constants import INPUT_RAW_SUBDIR, DATA_CREATION_SEED
+from climart.data_wrangling.data_variables import get_all_vars, input_variables_to_drop_for_exp, \
     output_variables_to_drop_for_exp, EXP_TYPES, _ALL_INPUT_VARS
-from rtml.data_wrangling.h5_dataset_writer import RT_GeneralHdF5_Writer
-from rtml.utils.utils import compute_absolute_level_height, get_year_to_canam_files_dict, \
+from climart.data_wrangling.h5_dataset_writer import RT_GeneralHdF5_Writer
+from climart.utils.utils import compute_absolute_level_height, get_year_to_canam_files_dict, \
     get_logger, compute_temperature_diff
 
 log = get_logger(__name__)

@@ -9,8 +9,8 @@ import matplotlib.pyplot as plt
 from analysis.clean_naming import get_model_name
 from analysis.wandb_api import get_runs_df, has_tags, topk_run_of_each_model_type, hasnt_tags, has_hyperparam_values, \
     larger_than, df_larger_than
-from rtml.data_wrangling.constants import TEST_YEARS
-from rtml.utils.plotting import set_labels_and_ticks, RollingCmaps, RollingLineFormats
+from climart.data_wrangling.constants import TEST_YEARS
+from climart.utils.plotting import set_labels_and_ticks, RollingCmaps, RollingLineFormats
 
 topk = 3
 save_dir = "./"

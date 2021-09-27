@@ -4,8 +4,8 @@ import numpy as np
 import torch
 import torch.nn as nn
 from torch import Tensor
-from rtml.models.base_model import BaseModel, BaseTrainer
-from rtml.utils.utils import get_activation_function, get_normalization_layer
+from climart.models.base_model import BaseModel, BaseTrainer
+from climart.utils.utils import get_activation_function, get_normalization_layer
 
 
 class MLPNet(BaseModel):

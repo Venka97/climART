@@ -1,19 +1,17 @@
-from rtml.models.GNs.graph_network import GN_Trainer, GraphNetwork, GN_withReadout
-from rtml.models.MLP import MLP_Trainer, MLPNet
-from rtml.models.CNN import CNN_Trainer, CNN_Net, CNN_Multiscale
-from rtml.models.base_model import BaseModel, BaseTrainer
-from rtml.models.transformers import Transformer_Trainer, Transformer
-
+from climart.models.GNs.graph_network import GN_Trainer, GraphNetwork, GN_withReadout
+from climart.models.MLP import MLP_Trainer, MLPNet
+from climart.models.CNN import CNN_Trainer, CNN_Net, CNN_Multiscale
+from climart.models.base_model import BaseModel, BaseTrainer
 
 def get_model(model_name: str, only_class: bool = False, *args, **kwargs) -> BaseModel:
     model_name = model_name.strip().lower()
     if model_name == 'mlp':
         model = MLPNet
     elif model_name in ['gcn', 'gnn']:
-        from rtml.models.GNNs.GCN import GCN
+        from climart.models.GNNs.GCN import GCN
         model = GCN
     elif model_name in ['gcn+readout', 'gnn+readout']:
-        from rtml.models.GNNs.GCN import GCN_withReadout
+        from climart.models.GNNs.GCN import GCN_withReadout
         model = GCN_withReadout
     elif model_name in ['gn', 'graph_net']:
         model = GraphNetwork
@@ -23,8 +21,6 @@ def get_model(model_name: str, only_class: bool = False, *args, **kwargs) -> Bas
         model = CNN_Net
     elif model_name == 'cnnms':
         model = CNN_Multiscale
-    elif model_name == 'transformer':
-        model = Transformer
     else:
         raise ValueError(f"Unknown model {model_name}")
     if only_class:
@@ -39,14 +35,12 @@ def get_trainer(model_name, *args, **kwargs) -> BaseTrainer:
     if model_name == 'mlp':
         trainer = MLP_Trainer
     elif is_gnn(model_name):
-        from rtml.models.GNNs.GCN import GCN_Trainer
+        from climart.models.GNNs.GCN import GCN_Trainer
         trainer = GCN_Trainer
     elif is_graph_net(model_name):
         trainer = GN_Trainer
     elif is_cnn(model_name):
         trainer = CNN_Trainer
-    elif model_name == 'transformer':
-        trainer = Transformer_Trainer
     else:
         raise ValueError()
     if 'name' not in kwargs:
