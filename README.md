@@ -70,6 +70,10 @@ For both pristine-sky and clear-sky conditions, we have that Dlev = 4 and Dglob 
 
 ```      pristine_array = layers_array[:, :, : 14] ```
 
+The complete list of variables in the dataset is as follows: </br>
+
+![Variables List](./images/variable_table.png)
+
 ## Training Options
 
 ```
