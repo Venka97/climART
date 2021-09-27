@@ -1,6 +1,6 @@
 # ***ClimART*** - A Benchmark Dataset for Emulating Atmospheric Radiative Transfer in Weather and Climate Models
 <a href="https://pytorch.org/get-started/locally/"><img alt="Python" src="https://img.shields.io/badge/-Python 3.7--3.9-blue?style=for-the-badge&logo=python&logoColor=white"></a>
-<a href="https://pytorch.org/get-started/locally/"><img alt="PyTorch" src="https://img.shields.io/badge/-PyTorch 1.7+-ee4c2c?style=for-the-badge&logo=pytorch&logoColor=white"></a>
+<a href="https://pytorch.org/get-started/locally/"><img alt="PyTorch" src="https://img.shields.io/badge/-PyTorch 1.8.1+-ee4c2c?style=for-the-badge&logo=pytorch&logoColor=white"></a>
 ![CC BY 4.0][cc-by-image]
 
 [cc-by-image]: https://i.creativecommons.org/l/by/4.0/88x31.png
@@ -33,49 +33,42 @@ Contact: Venkatesh Ramesh [(venka97 at gmail)](mailto:venka97@gmail.com) or Salv
 
 ## Overview:
 
-* ``rtml/``: Folder with the main code for RTML processing.
+* ``climart/``: Folder with the main code, baselines and ML training logic.
 * ``notebooks/``: Notebooks for visualization of data.
 * ``analysis/``: Scripts to create visualization of the results.
-* ``scripts_to_run/``: Scripts to train and evaluate models on the dataset.
-
-## Requirements
-
-* Linux and Windows are supported, but we recommend Linux for performance and compatibility reasons.
-* NVIDIA GPUs with at least 8 GB of memory and system with 12 GB RAM (More RAM is required if training with ``--load_train_into_mem`` option which allows for faster training). We have done all testing and development using NVIDIA V100 GPUs.
-* 64-bit Python 3.7 and PyTorch 1.8.1. See [https://pytorch.org/](https://pytorch.org/) for PyTorch install instructions.  
-* Python libraries mentioned in ``environment.yml`` file.
+* ``train_scripts/``: Scripts to train and evaluate models on the dataset.
 
 ## Getting Started
+<details><p>
+    <summary><b> Requirements</b></summary>
+    <br><ul>
+    <li>Linux and Windows are supported, but we recommend Linux for performance and compatibility reasons.</li>
+    <li>NVIDIA GPUs with at least 8 GB of memory and system with 12 GB RAM (More RAM is required if training with --load_train_into_mem option which allows for faster training). We have done all testing and development using NVIDIA V100 GPUs.</li> 
+    <li>64-bit Python >=3.7 and PyTorch >=1.8.1. See [https://pytorch.org/](https://pytorch.org/) for PyTorch install instructions.</li> 
+    <li>Python libraries mentioned in ``env.yml`` file, see Getting Started (Need to have miniconda/conda installed).</li> 
+    </ul>
+</details>
 
-Need to have miniconda/conda installed. 
 
-1. Install: ``conda env create -f env.yml``
-2. ``conda activate rtml_nips``
-3. ``bash data_download.sh``
-4. Go to the train_scripts folder.
-5. Select the appropriate model script and run using bash ``script_name.sh``
-
-## Tweaking the dataset
-
-It's possible to change the dataset use for training the data. The steps are as follows:
-1. Download the train/val/test years you want to use by changing the loop in ``data_download.sh.``
-2. Go to ``rtml/data_wrangling/constants.py`` and change the constants to indicate your choice of years (between ``line 30. & 40.``)
-3. Alternatively, traing and val data can be changed from the appropriate modelscript in ``train_scripts/`` folder.
-4. Run with the new modified dataset.
+    conda env create -f env.yml   # create new environment will all dependencies
+    conda activate climart 
+    bash data_download.sh
+    # For one of {CNN, GraphNet, GCN, MLP}, run the model with its lowercase name with the following commmand:
+    bash train_scripts/<model-name>.sh
 
 ## Dataset Structure
 
 To avoid storage redundancy, we store one single input array for both pristine- and clear-sky conditions. The dimensions of ClimART’s input arrays are:
 <ul>
-<li>layers: (N,Slay,Dlay) </li> <br>
-<li>levels: (N,Slev,Dlev) </li> <br>
-<li>globals: (N,Dglob) </li><br>
+<li>layers: (N, 49, D-lay) </li> <br>
+<li>levels: (N, 50, 4) </li> <br>
+<li>globals: (N, 82) </li><br>
 </ul>
 
-where N is the data dimensions (i.e. the number of examples of a specific year), Slay and Slev are the number of layers and levels in a column respectively (49 and 50 in this case), and Dlay, Dlev, Dglob is the number of features/channels for layers, levels, globals respectively. 
+where N is the data dimension (i.e. the number of examples of a specific year, or, during training, of a batch),
+ 49 and 50 are the number of layers and levels in a column respectively, and Dlay, 4, 82 is the number of features/channels for layers, levels, globals respectively. 
 
-For both pristine-sky and clear-sky conditions, we have that Dlev = 4 and Dglob = 82, while Dlay = 14 for pristine-sky, and Dlay = 45 for clear-sky conditions. The array for pristine-sky conditions can be easily accessed by slicing the first 14 features out of the stored array, e.g.:
-
+For pristine-sky Dlay = 14, while for clear-sky Dlay = 45, since it contains extra aerosol related variables. The array for pristine-sky conditions can be easily accessed by slicing the first 14 features out of the stored array, e.g.:
 ```      pristine_array = layers_array[:, :, : 14] ```
 
 The complete list of variables in the dataset is as follows: </br>
@@ -85,64 +78,79 @@ The complete list of variables in the dataset is as follows: </br>
 ## Training Options
 
 ```
---expID: A unique ID for the experiment if using logging.
---model: Model architecture to select for training (MLP, GCN, GN, CNN)
---scheduler: The learning rate scheduler used for training (expdecay, reducelronplateau, steplr, cosine)
+--exp_type: "pristine" or "clear_sky" for training on the respective atmospheric conditions.
+--target_type: "longwave" (thermal) or "shortwave" (solar) for training on the respective radiation type targets.
+--target_variable: "Fluxes" or "Heating-rate" for training on profiles of fluxes or heating rates.
+--model: ML model architecture to select for training (MLP, GCN, GN, CNN)
+--workers: The number of workers to use for dataloading/multi-processing.
+--device: "cuda" or "cpu" to use GPUs or not.
+--load_train_into_mem: Whether to load the training data into memory (can speed up training)
+--load_val_into_mem: Whether to load the validation data into memory (can speed up training)
 --lr: The learning rate to use for training.
---optim: The choice of optimizer to use.
---weight_decay: Weight decay to use for Adam optimizer.
---batch_size: Batch size for training.
---dropout: Dropout to use in final layers of model.
---act: Activation of choice for trainng models.
---loss: Loss function to train the model with.
 --epochs: Number of epochs to train the model for.
---in_normalize: Select how to normalize the data (Z, min_max, None)
+--optim: The choice of optimizer to use (e.g. Adam)
+--scheduler: The learning rate scheduler used for training (expdecay, reducelronplateau, steplr, cosine).
+--weight_decay: Weight decay to use for the optimization process.
+--batch_size: Batch size for training.
+--act: Activation function (e.g. ReLU, GeLU, ...).
+--dropout: Dropout rate to use for parameters.
+--loss: Loss function to train the model with (MSE recommended).
+--in_normalize: Select how to normalize the data (Z, min_max, None). Z-scaling is recommended.
 --train_years: The years to select for training the data. (Either individual years 1997+1991 or range 1991-1996)
---validation_years: The years to select for validating the data. (Either individual years 1997+1991 or range 1991-1996)
---net_norm: Normalization scheme to use in the model (batch_norm, layer_norm, inst_norm)
+--validation_years: The years to select for validating the data. Recommended: "2005" or "2005-06" 
+--net_norm: Normalization scheme to use in the model (batch_norm, layer_norm, instance_norm)
 --gap: Use global average pooling in-place of MLP to get output (CNN only).
---gradient_clipping: Value to clip the gradient to while training.
---hidden_dim: The hidden dimension to use for model.
---workers: The number of workers to use for dataloading.
+--gradient_clipping: If "norm", the L2-norm of the parameters is clipped the value of --clip. Otherwise no clipping.
+--clip: Value to clip the gradient to while training.
+--hidden_dims: The hidden dimension to use for model.
+--val_metric: Which metric to use for saving the 'best' model based on validation set. Default: "RMSE"
+--wandb_model: If "online", Weights&Biases logging. If "disabled" no logging.
+--expID: A unique ID for the experiment if using logging.
 
 ```
 
-## Baseline Configurations
+## Reproducing our Baselines
 
+To reproduce our paper results (for seed = 7) you may run the following commands in a shell. 
+    
 ### CNN
 
 ```
-python ../main.py --expID "" --model CNN --scheduler "expdecay" --lr 2e-4 --weight_decay 1e-6 --batch_size 128 \
-  --dropout 0.0 --act GELU --optim Adam --loss mse --epochs 100 --workers 8 --in_normalize Z \
-  --train_years "1990+1999+2003" --validation_years "2005" --net_norm none \
-  --gap --gradient_clipping norm --seed 7 \
-  --wandb_mode disabled \
+python main.py --model "CNN" --exp_type "pristine" --target_type "shortwave" --workers 6 --seed 7 \
+  --batch_size 128 --lr 2e-4 --optim Adam --weight_decay 1e-6 --scheduler "expdecay" \
+  --in_normalize "Z" --net_norm "none" --dropout 0.0 --act "GELU" --epochs 100 \
+  --gap --gradient_clipping "norm" --clip 1.0 \
+  --train_years "1990+1999+2003" --validation_years "2005" \
+  --wandb_mode disabled
 ```
 
 ### MLP 
 
 ```
-python ../main.py --expID "" --model "MLP" --scheduler "expdecay" --exp_type "pristine" --target_type "shortwave" --lr 2e-4 \
-  --weight_decay 1e-6 --batch_size 128 --net_normalization "layer_norm" --dropout 0.0 --act "GELU" \
-  --optim Adam --gradient_clipping "Norm" --clip 1 --epochs 100 --workers 6 --hidden_dims 512 256 256 \
-  --in_normalize Z --train_years "1990+1999+2003" --validation_years "2005" --seed 7 \
-  --wandb_mode disabled \
+python main.py --model "MLP" --exp_type "pristine" --target_type "shortwave" --workers 6 --seed 7 \
+  --batch_size 128 --lr 2e-4 --optim Adam --weight_decay 1e-6 --scheduler "expdecay" \
+  --in_normalize "Z" --net_norm "layer_norm" --dropout 0.0 --act "GELU" --epochs 100 \
+  --gradient_clipping "norm" --clip 1.0 --hidden_dims 512 256 256 \
+  --train_years "1990+1999+2003" --validation_years "2005" \
+  --wandb_mode disabled
 ```
 
 ### GCN
 
 ```
-python ../main.py \
-  --model "GCN+Readout" --target_type "shortwave" --workers 8 --expID "" --hidden_dims 128 128 128 --scheduler "expdecay" \
-  --lr 2e-4 --weight_decay 1e-6 --batch_size 128 --act "GELU" --net_normalization "none" --gradient_clipping "Norm" --clip 1.0 \
-  --epochs 100 --residual --improved_self_loops --preprocessing "mlp_projection" --projector_net_normalization "layer_norm" \
-  --graph_pooling "mean" --drop_last_level --in_normalize Z --train_years "1990+1999+2003" --validation_years "2005" \
-  --wandb_mode disabled \
+python main.py --model "GCN+Readout" --exp_type "pristine" --target_type "shortwave" --workers 6 --seed 7 \
+  --batch_size 128 --lr 2e-4 --optim Adam --weight_decay 1e-6 --scheduler "expdecay" \
+  --in_normalize "Z" --net_norm "layer_norm" --dropout 0.0 --act "GELU" --epochs 100 \
+  --preprocessing "mlp_projection" --projector_net_normalization "layer_norm" --graph_pooling "mean"\
+  --residual --improved_self_loops --drop_last_level \
+  --gradient_clipping "norm" --clip 1.0 --hidden_dims 128 128 128 \  
+  --train_years "1990+1999+2003" --validation_years "2005" \
+  --wandb_mode disabled
 ```
 
 ## Logging
 
-Currently, logging is disabled by default. However, the user may use wandb to log the experiments by changing the wandb confing in main.py.
+Currently, logging is disabled by default. However, the user may use wandb to log the experiments by passing the argument ``--wandb_mode=online``
 
 ## Notebooks
 
@@ -153,4 +161,6 @@ This work is made available under [Attribution 4.0 International (CC BY 4.0)](ht
 
 ## Development
 
-This repository is currently under active development and you may encounter bugs with some functionality. Pull requests relating to bugs will be accepted however, we don't accept outside code contributions in terms of new features as this repository is a replication of the code related with the paper. 
+This repository is currently under active development and you may encounter bugs with some functionality. 
+Pull requests relating to bugs will be accepted however, we don't accept outside code contributions in 
+terms of new features as this repository is a replication of the code related with the paper. 
