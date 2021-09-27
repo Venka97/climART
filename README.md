@@ -2,8 +2,6 @@
 
 ### Using deep learning to optimise radiative transfer calculations.
 
-Salva Rühling Cachay<sup>*</sup>, Venkatesh Ramesh<sup>*</sup>, Jason N. S. Cole, Howard Barker, David Rolnick.
-
 Abstract:   *Numerical simulations of Earth's weather and climate require substantial amounts of computation. This has led to a growing interest in replacing subroutines that explicitly compute physical processes with approximate machine learning (ML) methods that are fast at inference time. Within weather and climate models, atmospheric radiative transfer (RT) calculations are especially expensive.  This has made them a popular target for neural network-based emulators. However, prior work is hard to compare due to the lack of a comprehensive dataset and standardized best practices for ML benchmarking. To fill this gap, we build a large dataset, ClimART, with more than **10 million** samples from present, pre-industrial, and future climate conditions}, based on the Canadian Earth System Model.
 ClimART poses several methodological challenges for the ML community, such as multiple out-of-distribution test sets, underlying domain physics, and a trade-off between accuracy and inference speed. We also present several novel baselines that indicate shortcomings of datasets and network architectures used in prior work.*
 
