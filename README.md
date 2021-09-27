@@ -1,4 +1,12 @@
-# ***climART*** - Official Pytorch Implementation
+# ***ClimART*** - A Benchmark Dataset for Emulating Atmospheric Radiative Transfer in Weather and Climate Models
+<a href="https://pytorch.org/get-started/locally/"><img alt="Python" src="https://img.shields.io/badge/-Python 3.7--3.9-blue?style=for-the-badge&logo=python&logoColor=white"></a>
+<a href="https://pytorch.org/get-started/locally/"><img alt="PyTorch" src="https://img.shields.io/badge/-PyTorch 1.7+-ee4c2c?style=for-the-badge&logo=pytorch&logoColor=white"></a>
+![CC BY 4.0][cc-by-image]
+
+[cc-by-image]: https://i.creativecommons.org/l/by/4.0/88x31.png
+[cc-by-shield]: https://img.shields.io/badge/License-CC%20BY%204.0-lightgrey.svg
+
+## Official PyTorch Implementation
 
 ### Using deep learning to optimise radiative transfer calculations.
 
@@ -140,9 +148,8 @@ Currently, logging is disabled by default. However, the user may use wandb to lo
 
 There are some jupyter notebooks in the notebooks folder which we used for plotting, benchmarking etc. You may go through them to visualize the results/benchmark the models.
 
-## License
-
-This work is made available under [Attribution 4.0 International (CC BY 4.0)](https://creativecommons.org/licenses/by/4.0/legalcode) license. 
+## License: 
+This work is made available under [Attribution 4.0 International (CC BY 4.0)](https://creativecommons.org/licenses/by/4.0/legalcode) license. ![CC BY 4.0][cc-by-shield]
 
 ## Development
 
