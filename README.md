@@ -121,6 +121,10 @@ Currently, logging is disabled by default. However, the user may use wandb to lo
 
 There are some jupyter notebooks in the notebooks folder which we used for plotting, benchmarking etc. You may go through them to visualize the results/benchmark the models.
 
+## License
+
+This work is made available under [Attribution 4.0 International (CC BY 4.0)](https://creativecommons.org/licenses/by/4.0/legalcode) license. 
+
 ## Development
 
 This repository is currently under active development and you may encounter bugs with some functionality. Pull requests relating to bugs will be accepted however, we don't accept outside code contributions in terms of new features as this repository is a replication of the code related with the paper. 
