@@ -58,10 +58,11 @@ It's possible to change the dataset use for training the data. The steps are as 
 ## Dataset Structure
 
 To avoid storage redundancy, we store one single input array for both pristine- and clear-sky conditions. The dimensions of ClimART’s input arrays are:
-
-• layers: (N,Slay,Dlay) 
-• levels: (N,Slev,Dlev)
-• globals: (N,Dglob)
+<ul>
+<li>layers: (N,Slay,Dlay) </li> <br>
+<li>levels: (N,Slev,Dlev) </li> <br>
+<li>globals: (N,Dglob) </li><br>
+</ul>
 
 where N is the data dimensions (i.e. the number of examples of a specific year), Slay and Slev are the number of layers and levels in a column respectively (49 and 50 in this case), and Dlay, Dlev, Dglob is the number of features/channels for layers, levels, globals respectively. 
 
