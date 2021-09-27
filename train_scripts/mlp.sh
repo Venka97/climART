@@ -19,7 +19,9 @@ python ../main.py \
   --workers 6 \
   --hidden_dims 512 256 256 \
   --in_normalize Z \
-  --train_years "1997" \
-  --validation_years "1998" \
+  --train_years "1999" \
+  --validation_years "2005" \
   --seed 7 \
+  --load_val_into_mem \
+  --load_train_into_mem \
   --wandb_mode disabled \

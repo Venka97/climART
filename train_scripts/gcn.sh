@@ -22,8 +22,9 @@ python ../main.py \
   --graph_pooling "mean" \
   --drop_last_level \
   --in_normalize Z \
-  --train_years "1997" \
-  --validation_years "1998" \
+  --train_years "1999" \
+  --validation_years "2005" \
+  --load_val_into_mem \
+  --load_train_into_mem \
   --wandb_mode disabled \
  # --learn_edge_structure \
- # --drop_level_features \

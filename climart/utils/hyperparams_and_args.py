@@ -7,14 +7,13 @@ import time
 
 import wandb
 
-from rtml.models.GNs.constants import GLOBALS
-from rtml.models.interface import is_gnn, is_cnn, is_graph_net
-from rtml.utils.utils import set_gpu, get_name
+from climart.models.GNs.constants import GLOBALS
+from climart.models.interface import is_gnn, is_cnn, is_graph_net
+from climart.utils.utils import set_gpu, get_name
 
 
 def get_argparser(jupyter_mode=False):
     parser = argparse.ArgumentParser(description='PyTorch RT emulation')
-    parser.add_argument('--user', type=str, default='salva', help='salva, venky or local')
     parser.add_argument('--resume_training_file', type=str, help='A .pkl file to resume training from')
     parser.add_argument('--resume_ID', type=str, help='A wandb run ID to resume training from')
 
@@ -35,7 +34,6 @@ def get_argparser(jupyter_mode=False):
     parser.add_argument('--load_train_into_mem', action='store_true', help='Load training h5`s into RAM?')
     parser.add_argument('--load_val_into_mem', action='store_true', help='Load val h5 into RAM?')
 
-
     parser.add_argument('--epochs', type=int, default=100, help='')
     parser.add_argument('--additional_epochs', type=int, default=0, help='Additional epochs when resuming training.')
     parser.add_argument('--loss', default="MSE", help="Please give a value for the loss function")
@@ -45,24 +43,17 @@ def get_argparser(jupyter_mode=False):
     parser.add_argument('--clip', default=1.0, type=float,
                         help='How to clip the gradients. Only used when using gradient clipping')
 
-    parser.add_argument('--act', '--activation_function', default="RELU",
+    parser.add_argument('--act', '--activation_function', default="GeLU",
                         help="Please give a value for the activation function")
-    parser.add_argument('--batch_size', type=int, default=64, help='batch size')
+    parser.add_argument('--batch_size', type=int, default=128, help='batch size')
     parser.add_argument('--optim', default='Adam', help="Please give a value for optimizer")
-    parser.add_argument('--lr', default=1e-5, type=float, help="Please give a value for learning rate")
+    parser.add_argument('--lr', default=2e-4, type=float, help="Please give a value for learning rate")
     parser.add_argument('--nesterov', default='True', type=str, help="Please give a value for learning rate")
     parser.add_argument('--weight_decay', type=float, default=5e-7, help='weight decay rate')
     parser.add_argument('--dropout', type=float, default=0.0, help='dropout rate')
     parser.add_argument('--shuffle', default='True', help='shuffle training batches?')
 
-    parser.add_argument('--config', help="Please give a config.json file with training/model/data/param details")
     parser.add_argument('--seed', default=7, type=int, help="Please give a value for seed")
-    # parser.add_argument('--L', default=5, type=int, help="Please give a value for #layers")
-    # parser.add_argument('--hidden_dim', default=300, type=int, help="Please give a value for hidden_dim")
-    # [500, 350, 350, 250]
-    # [256, 256, 256, 512, 512, 512, 256, 256, 256]
-    # [512, 512, 512, 256, 256, 256, 512, 512, 512]
-    # [256, 256, 256, 256, 256, 256, 256, 256, 256]
     parser.add_argument('--hidden_dims', nargs='*', type=int, default=[256, 256, 256, 256, 256],
                         help="Hidden layer dimensions, pass multiple values.")
     parser.add_argument('--out_dim', default=100, type=int, help="Please give a value for out_dim")
@@ -121,10 +112,8 @@ def get_argparser(jupyter_mode=False):
                         help='Whether to normalize outputs layer/level-wise')
     parser.add_argument('--log_scaling', action='store_true', help='Log-scale pressure+height vars?')
 
-    parser.add_argument('--mu_law_mu', default=256, type=int, help="Please give a value mu")
-
-    parser.add_argument('--scheduler', default="No", help="Please give a value for using a schedule")
-    parser.add_argument('--val_metric', type=str, default='MAE',
+    parser.add_argument('--scheduler', default="none", help="Please give a value for using a schedule")
+    parser.add_argument('--val_metric', type=str, default='RMSE',
                         help='Which metric to use for early-stopping (lower->better needed)')
     ########
     parser.add_argument('--train_years', type=str, default="1979-83", help='Training set years')
@@ -150,8 +139,6 @@ def get_argparser(jupyter_mode=False):
         params['out_normalize'] = None
     else:
         params['out_normalize'] = args.out_normalize.lower()
-    if 'mu_law' in params['in_normalize'] or (params['out_normalize'] and 'mu_law' in params['out_normalize']):
-        params['mu_law_mu'] = args.mu_law_mu
 
     params["train_years"] = args.train_years
     params["validation_years"] = args.validation_years
