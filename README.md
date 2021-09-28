@@ -25,24 +25,24 @@ Contact: Venkatesh Ramesh [(venka97 at gmail)](mailto:venka97@gmail.com) or Salv
 ## Getting Started
 <details><p>
     <summary><b> Requirements</b></summary>
-    <br><div class="boxed"><ul>
+    <p style="padding: 10px; border: 2px solid red;">
+    <ul>
     <li>Linux and Windows are supported, but we recommend Linux for performance and compatibility reasons.</li>
     <li>NVIDIA GPUs with at least 8 GB of memory and system with 12 GB RAM (More RAM is required if training with --load_train_into_mem option which allows for faster training). We have done all testing and development using NVIDIA V100 GPUs.</li> 
     <li>64-bit Python >=3.7 and PyTorch >=1.8.1. See [https://pytorch.org/](https://pytorch.org/) for PyTorch install instructions.</li> 
     <li>Python libraries mentioned in ``env.yml`` file, see Getting Started (Need to have miniconda/conda installed).</li> 
-    </ul></div>
+    </ul></p>
 </details>
 
 <details><p>
     <summary><b> Downloading the ClimART Dataset </b></summary>
-    <br>
-    <div class="boxed">
+    <p style="padding: 10px; border: 2px solid red;">
     By default, only a subset of CLimART is downloaded.
     To download the train/val/test years you want, please change the loop in ``data_download.sh.`` appropriately.
     To download the whole ClimART dataset, you can simply run 
     
     bash scripts/download_climart_full.sh 
-   </div>
+   </p>
 </details>
 
 
