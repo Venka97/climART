@@ -164,5 +164,3 @@ This work is made available under [Attribution 4.0 International (CC BY 4.0)](ht
 
 This repository is currently under active development and you may encounter bugs with some functionality. 
 Any feedback, extensions & suggestions are welcome!
-Pull requests relating to bugs will be accepted however, we don't accept outside code contributions in 
-terms of new features as this repository is a replication of the code related with the paper. 
