@@ -5,7 +5,7 @@ import logging
 import math
 import os
 from functools import wraps
-from typing import Union, Sequence, List, Dict
+from typing import Union, Sequence, List, Dict, Optional, Callable
 
 import numpy as np
 import xarray as xr
@@ -14,23 +14,28 @@ import torch.nn as nn
 import torch.nn.functional as F
 from torch import Tensor
 
-from rtml.data_wrangling import constants, data_variables
+from climart.data_wrangling import constants, data_variables
 
 
-def get_activation_function(name, functional=False, num=1, device='cuda'):
-    name = name.lower().strip() if isinstance(name, str) else None
+def get_activation_function(name: str, functional: bool = False, num: int = 1):
+    name = name.lower().strip()
 
-    funcs = {"softmax": F.softmax, "relu": F.relu, "tanh": torch.tanh, "sigmoid": torch.sigmoid, "identity": None,
-             None: None, 'swish': F.silu, 'silu': F.silu, 'elu': F.elu, 'gelu': F.gelu,
-             'prelu': nn.PReLU(), 'none': None}
+    def get_functional(s: str) -> Optional[Callable]:
+        return {"softmax": F.softmax, "relu": F.relu, "tanh": torch.tanh, "sigmoid": torch.sigmoid,
+                "identity": nn.Identity(),
+                None: None, 'swish': F.silu, 'silu': F.silu, 'elu': F.elu, 'gelu': F.gelu, 'prelu': nn.PReLU(),
+                }[s]
 
-    nn_funcs = {"softmax": nn.Softmax(dim=1), "relu": nn.ReLU(), "tanh": nn.Tanh(), "sigmoid": nn.Sigmoid(),
+    def get_nn(s: str) -> Optional[Callable]:
+        return {"softmax": nn.Softmax(dim=1), "relu": nn.ReLU(), "tanh": nn.Tanh(), "sigmoid": nn.Sigmoid(),
                 "identity": nn.Identity(), 'silu': nn.SiLU(), 'elu': nn.ELU(), 'prelu': nn.PReLU(),
-                'swish': nn.SiLU(), 'gelu': nn.GELU(), 'none': None, None: None}
+                'swish': nn.SiLU(), 'gelu': nn.GELU(),
+                }[s]
+
     if num == 1:
-        return funcs[name] if functional else nn_funcs[name]
+        return get_functional(name) if functional else get_nn(name)
     else:
-        return [nn_funcs[name].to(device) for _ in range(num)]
+        return [get_nn(name) for _ in range(num)]
 
 
 def get_normalization_layer(name, dims, num_groups=None, device='cpu'):

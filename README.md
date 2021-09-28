@@ -17,9 +17,9 @@ Contact: Venkatesh Ramesh [(venka97 at gmail)](mailto:venka97@gmail.com) or Salv
 
 ## Overview:
 
-* ``climart/``: Folder with the main code, baselines and ML training logic.
+* ``climart/``: Package with the main code, baselines and ML training logic.
 * ``notebooks/``: Notebooks for visualization of data.
-* ``analysis/``: Scripts to create visualization of the results.
+* ``analysis/``: Scripts to create visualization of the results (requires logging).
 * ``train_scripts/``: Scripts to train and evaluate models on the dataset.
 
 ## Getting Started

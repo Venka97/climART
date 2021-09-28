@@ -7,11 +7,11 @@ from functools import partial
 import torch
 import xarray as xr
 import numpy as np
-from rtml.models.interface import get_model, is_gnn, is_graph_net, get_trainer, get_input_transform
-from rtml.models.column_handler import ColumnPreprocesser
-from rtml.data_wrangling.constants import LEVELS, LAYERS, GLOBALS, PRISTINE, get_data_dims, get_metadata
-from rtml.data_wrangling.h5_dataset import RT_HdF5_Dataset
-from rtml.utils.utils import set_seed, get_name, year_string_to_list
+from climart.models.interface import get_model, is_gnn, is_graph_net, get_trainer, get_input_transform
+from climart.models.column_handler import ColumnPreprocesser
+from climart.data_wrangling.constants import LEVELS, LAYERS, GLOBALS, PRISTINE, get_data_dims, get_metadata
+from climart.data_wrangling.h5_dataset import ClimART_HdF5_Dataset
+from climart.utils.utils import set_seed, get_name, year_string_to_list
 
 
 def get_lat_lon():
@@ -69,7 +69,7 @@ def get_preds_and_pressure(ckpt_path: str,
         log_scaling=params['log_scaling'],
         load_h5_into_mem=load_h5_into_mem
     )
-    dset = RT_HdF5_Dataset(years=year_string_to_list(str(year)), name='Eval', output_normalization=None,
+    dset = ClimART_HdF5_Dataset(years=year_string_to_list(str(year)), name='Eval', output_normalization=None,
                            **dataset_kwargs)
     dloader = torch.utils.data.DataLoader(dset, batch_size=batch_size, pin_memory=True, shuffle=False, num_workers=4)
     output_postprocesser = dset.output_variable_splitter

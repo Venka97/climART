@@ -16,7 +16,7 @@ NP_ARRAY_MAPPING = Callable[[np.ndarray], np.ndarray]
 log = get_logger(__name__)
 
 
-class RT_GeneralHdF5_Writer:
+class ClimART_GeneralHdF5_Writer:
     def __init__(self,
                  input_data: xr.Dataset,
                  output_data: Dict[str, xr.Dataset],

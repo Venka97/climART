@@ -178,42 +178,11 @@ class MinMax_LogNormalizer(Normalizer):
         self.min_max_normalizer.apply_torch_func(fn)
 
 
-class MuLaw_Normalizer(Normalizer):
-    def __init__(self, mu=256, min=None, max_minus_min=None, max=None, **kwargs):
-        super().__init__(**kwargs)
-        self.mu = mu
-        self.min_max_normalizer = MinMax_Normalizer(min, max_minus_min, max)
-
-    def normalize(self, data, *args, **kwargs):
-        normalized_data = self.min_max_normalizer.normalize(data)
-        normalized_data = np.log(1 + self.mu * normalized_data) / np.log(1 + self.mu)
-        return normalized_data
-
-    def inverse_normalize(self, normalized_data):
-        data = ((1 + self.mu) ** normalized_data - 1) / self.mu
-        data = self.min_max_normalizer.inverse_normalize(data)
-        return data
-
-    def stored_values(self):
-        return {**self.min_max_normalizer.stored_values()}
-
-    def change_input_type(self, new_type):
-        self.min_max_normalizer.change_input_type(new_type)
-
-    def apply_torch_func(self, fn):
-        self.min_max_normalizer.apply_torch_func(fn)
-
-    def __call__(self, data, *args, **kwargs):
-        normalized_data = self.min_max_normalizer(data)
-        return np.log(1 + self.mu * normalized_data) / np.log(1 + self.mu)
-
-
 def get_normalizer(normalizer='z', *args, **kwargs) -> Normalizer:
     normalizer = normalizer.lower().strip().replace('-', '_').replace('&', '+')
     supported_normalizers = ['z',
                              'min_max',
                              'min_max+log', 'min_max_log',
-                             'mu_law',
                              'log_z',
                              'log',
                              'none']
@@ -224,8 +193,6 @@ def get_normalizer(normalizer='z', *args, **kwargs) -> Normalizer:
         return MinMax_Normalizer(*args, **kwargs)
     elif normalizer in ['min_max+log', 'min_max_log']:
         return MinMax_LogNormalizer(*args, **kwargs)
-    elif normalizer == 'mu_law':
-        return MuLaw_Normalizer(*args, **kwargs)
     elif normalizer in ['logz', 'log_z']:
         return LogZ_Normalizer(*args, **kwargs)
     elif normalizer == 'log':

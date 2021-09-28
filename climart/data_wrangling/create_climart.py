@@ -13,7 +13,7 @@ from tqdm import tqdm
 from climart.data_wrangling.constants import INPUT_RAW_SUBDIR, DATA_CREATION_SEED
 from climart.data_wrangling.data_variables import get_all_vars, input_variables_to_drop_for_exp, \
     output_variables_to_drop_for_exp, EXP_TYPES, _ALL_INPUT_VARS
-from climart.data_wrangling.h5_dataset_writer import RT_GeneralHdF5_Writer
+from climart.data_wrangling.h5_dataset_writer import ClimART_GeneralHdF5_Writer
 from climart.utils.utils import compute_absolute_level_height, get_year_to_canam_files_dict, \
     get_logger, compute_temperature_diff
 
@@ -180,7 +180,7 @@ def create_ML_dataset_and_h5(
         add_coords=True,
         use_cache_for_coords=True
     )
-    h5_dset = RT_GeneralHdF5_Writer(
+    h5_dset = ClimART_GeneralHdF5_Writer(
         input_data=X_year,
         output_data=Y_dict_year,
         save_name=str(year),

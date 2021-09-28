@@ -5,7 +5,7 @@ Author: Salva Rühling Cachay
 import matplotlib
 import numpy as np
 import wandb
-from rtml.utils.plotting import level_errors, height_errors, profile_errors
+from climart.utils.plotting import level_errors, height_errors, profile_errors
 
 
 def log_epoch_vals(writer, loss, epoch, val_stats=None, test_stats=None):

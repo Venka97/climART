@@ -14,8 +14,7 @@ from torch.utils.data import DataLoader
 
 from climart.utils.callbacks import TestingScheduleCallback
 from climart.utils.evaluation import evaluate_preds, evaluate_preds_per_var
-from climart.utils.model_logging import update_tqdm, dataset_split_wandb_dict, toa_profile_plots_wandb_dict, \
-    prediction_magnitudes_wandb_dict, toa_level_errors_wandb_dict
+from climart.utils.model_logging import update_tqdm, dataset_split_wandb_dict, toa_profile_plots_wandb_dict, toa_level_errors_wandb_dict
 from climart.utils.optimization import get_loss, get_optimizer, get_scheduler, ReduceLROnPlateau
 from climart.utils.preprocessing import Normalizer
 from climart.utils.utils import set_seed, get_logger
