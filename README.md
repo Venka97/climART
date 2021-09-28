@@ -44,9 +44,9 @@ Contact: Venkatesh Ramesh [(venka97 at gmail)](mailto:venka97@gmail.com) or Salv
 
 To avoid storage redundancy, we store one single input array for both pristine- and clear-sky conditions. The dimensions of ClimART’s input arrays are:
 <ul>
-<li>layers: (N, 49, D-lay) </li> <br>
-<li>levels: (N, 50, 4) </li> <br>
-<li>globals: (N, 82) </li><br>
+<li>layers: (N, 49, D-lay) </li>
+<li>levels: (N, 50, 4) </li>
+<li>globals: (N, 82) </li>
 </ul>
 
 where N is the data dimension (i.e. the number of examples of a specific year, or, during training, of a batch),
