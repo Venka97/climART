@@ -39,7 +39,7 @@ def get_basic_input_transform(batched: bool):
     return identity
 
 
-class RT_HdF5_Dataset(torch.utils.data.Dataset):
+class ClimART_HdF5_Dataset(torch.utils.data.Dataset):
     """Class for working with multiple HDF5 datasets"""
 
     def __init__(
