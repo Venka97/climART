@@ -20,25 +20,37 @@ Contact: Venkatesh Ramesh [(venka97 at gmail)](mailto:venka97@gmail.com) or Salv
 * ``climart/``: Package with the main code, baselines and ML training logic.
 * ``notebooks/``: Notebooks for visualization of data.
 * ``analysis/``: Scripts to create visualization of the results (requires logging).
-* ``train_scripts/``: Scripts to train and evaluate models on the dataset.
+* ``scripts/``: Scripts to train and evaluate models, and to download the whole ClimART dataset.
 
 ## Getting Started
 <details><p>
     <summary><b> Requirements</b></summary>
-    <br><ul>
+    <br><div class="boxed"><ul>
     <li>Linux and Windows are supported, but we recommend Linux for performance and compatibility reasons.</li>
     <li>NVIDIA GPUs with at least 8 GB of memory and system with 12 GB RAM (More RAM is required if training with --load_train_into_mem option which allows for faster training). We have done all testing and development using NVIDIA V100 GPUs.</li> 
     <li>64-bit Python >=3.7 and PyTorch >=1.8.1. See [https://pytorch.org/](https://pytorch.org/) for PyTorch install instructions.</li> 
     <li>Python libraries mentioned in ``env.yml`` file, see Getting Started (Need to have miniconda/conda installed).</li> 
-    </ul>
+    </ul></div>
 </details>
 
 
     conda env create -f env.yml   # create new environment will all dependencies
-    conda activate climart 
-    bash data_download.sh
+    conda activate climart  # activate the environment called 'climart'
+    bash data_download.sh  # download the dataset (or a subset of it)
     # For one of {CNN, GraphNet, GCN, MLP}, run the model with its lowercase name with the following commmand:
-    bash train_scripts/<model-name>.sh
+    bash scripts/train_<model-name>.sh
+
+<details><p>
+    <summary><b> Downloading the ClimART Dataset </b></summary>
+    <br>
+    <div class="boxed">
+    By default, only a subset of CLimART is downloaded.
+    To download the train/val/test years you want, please change the loop in ``data_download.sh.`` appropriately.
+    To download the whole ClimART dataset, you can simply run 
+    
+    bash scripts/download_climart_full.sh 
+   </div>
+</details>
 
 ## Dataset Structure
 
