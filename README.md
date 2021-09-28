@@ -15,22 +15,6 @@ ClimART poses several methodological challenges for the ML community, such as mu
 
 Contact: Venkatesh Ramesh [(venka97 at gmail)](mailto:venka97@gmail.com) or Salva Rühling Cachay [(salvaruehling at gmail)](mailto:salvaruehling@gmail.com). <br>
 
-## Directory Structure
-
-```
-.
-├── analysis
-├── ECC_data
-├── notebooks
-├── rtml
-│   ├── data_wrangling
-│   ├── models
-│   ├── utils
-├── tests
-└── train_scripts
-  
-```
-
 ## Overview:
 
 * ``climart/``: Folder with the main code, baselines and ML training logic.
