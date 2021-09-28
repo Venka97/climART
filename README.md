@@ -39,7 +39,7 @@ Contact: Venkatesh Ramesh [(venka97 at gmail)](mailto:venka97@gmail.com) or Salv
     <p style="padding: 10px; border: 2px solid red;">
     By default, only a subset of CLimART is downloaded.
     To download the train/val/test years you want, please change the loop in ``data_download.sh.`` appropriately.
-    To download the whole ClimART dataset, you can simply run 
+    To **download the whole ClimART dataset**, you can simply run 
     
     bash scripts/download_climart_full.sh 
    </p>
