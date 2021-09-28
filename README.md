@@ -50,7 +50,7 @@ To avoid storage redundancy, we store one single input array for both pristine- 
 </ul>
 
 where N is the data dimension (i.e. the number of examples of a specific year, or, during training, of a batch),
- 49 and 50 are the number of layers and levels in a column respectively, and Dlay, 4, 82 is the number of features/channels for layers, levels, globals respectively. 
+ 49 and 50 are the number of layers and levels in a column respectively. Dlay, 4, 82 is the number of features/channels for layers, levels, globals respectively. 
 
 For pristine-sky Dlay = 14, while for clear-sky Dlay = 45, since it contains extra aerosol related variables. The array for pristine-sky conditions can be easily accessed by slicing the first 14 features out of the stored array, e.g.:
 ```      pristine_array = layers_array[:, :, : 14] ```
