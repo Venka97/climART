@@ -33,13 +33,6 @@ Contact: Venkatesh Ramesh [(venka97 at gmail)](mailto:venka97@gmail.com) or Salv
     </ul></div>
 </details>
 
-
-    conda env create -f env.yml   # create new environment will all dependencies
-    conda activate climart  # activate the environment called 'climart'
-    bash data_download.sh  # download the dataset (or a subset of it)
-    # For one of {CNN, GraphNet, GCN, MLP}, run the model with its lowercase name with the following commmand:
-    bash scripts/train_<model-name>.sh
-
 <details><p>
     <summary><b> Downloading the ClimART Dataset </b></summary>
     <br>
@@ -51,6 +44,14 @@ Contact: Venkatesh Ramesh [(venka97 at gmail)](mailto:venka97@gmail.com) or Salv
     bash scripts/download_climart_full.sh 
    </div>
 </details>
+
+
+    conda env create -f env.yml   # create new environment will all dependencies
+    conda activate climart  # activate the environment called 'climart'
+    bash data_download.sh  # download the dataset (or a subset of it, see above)
+    # For one of {CNN, GraphNet, GCN, MLP}, run the model with its lowercase name with the following commmand:
+    bash scripts/train_<model-name>.sh
+
 
 ## Dataset Structure
 
