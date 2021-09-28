@@ -26,13 +26,18 @@ def get_argparser(jupyter_mode=False):
     parser.add_argument('--model_dir', type=str, default='./out/', help='')
 
     parser.add_argument('--model', type=str, default='MLP',
-                        help='Which ML model to use (MLP, GCN, GN, CNN, CNNMS, Transformer)')
+                        help='Which ML model to use (MLP, GCN, GN, CNN, CNNMS)')
 
     parser.add_argument('--gpu_id', default=0, help="Please give a value for gpu device")
     parser.add_argument('--device', type=str, default='cuda', help='')
     parser.add_argument('--workers', type=int, default=4, help='Number of workers for loading data')
     parser.add_argument('--load_train_into_mem', action='store_true', help='Load training h5`s into RAM?')
     parser.add_argument('--load_val_into_mem', action='store_true', help='Load val h5 into RAM?')
+
+    parser.add_argument('--test_ood_1991', action='store_true', help='Load 1991 Mt. Pinatubo OOD test data?')
+    parser.add_argument('--test_ood_historic', action='store_true', help='Load & Test on Historic (1850-52) data?')
+    parser.add_argument('--test_ood_future', action='store_true', help='Load & Test on Future (2097-99) data?')
+
 
     parser.add_argument('--epochs', type=int, default=100, help='')
     parser.add_argument('--additional_epochs', type=int, default=0, help='Additional epochs when resuming training.')
@@ -168,7 +173,6 @@ def get_argparser(jupyter_mode=False):
     # network parameters
     net_params = dict()
     net_params['activation_function'] = args.act
-    # net_params['in_dim'] = 2 * params['window'] if params['use_heat_content'] else params['window']
 
     if 'L' in args and args.L is not None:
         net_params['L'] = int(args.L)
@@ -177,10 +181,7 @@ def get_argparser(jupyter_mode=False):
     net_params['hidden_dims'] = args.hidden_dims
     if args.out_dim is not None:
         net_params['out_dim'] = int(args.out_dim)
-    # if args.residual is not None:
-    #    net_params['residual'] = True if args.residual in ['True', True] else False
-    # if args.readout is not None:
-    #    net_params['readout'] = args.readout
+
     if args.dropout is not None:
         net_params['dropout'] = float(args.dropout)
     net_params['net_normalization'] = args.net_norm.lower()
@@ -232,6 +233,7 @@ def get_argparser(jupyter_mode=False):
         }
 
     def prefix():
+        """ This is a prefix for naming the runs for a more agreeable logging."""
         s = args.expID
         if 'clear' in params['exp_type']:
             s += '_CS'

@@ -5,9 +5,9 @@ import wandb
 import torch
 from torch.utils.data import DataLoader
 
-from climart.data_wrangling.constants import TEST_YEARS, LAYERS, get_flux_mean, OOD_PRESENT_YEARS, TRAIN_YEARS, \
-    GLOBALS, LEVELS, PRISTINE, get_data_dims
-from climart.data_wrangling.h5_dataset import RT_HdF5_Dataset
+from climart.data_wrangling.constants import TEST_YEARS, LAYERS, OOD_PRESENT_YEARS, TRAIN_YEARS, get_flux_mean, \
+    get_data_dims, OOD_FUTURE_YEARS, OOD_HISTORIC_YEARS
+from climart.data_wrangling.h5_dataset import ClimART_HdF5_Dataset
 from climart.models.column_handler import ColumnPreprocesser
 from climart.models.interface import get_trainer, is_gnn, is_graph_net, get_model, get_input_transform
 
@@ -20,25 +20,27 @@ log = get_logger(__name__)
 
 
 def main(params, net_params, other_args, only_final_eval=False, *args, **kwargs):
-    set_seed(params['seed'])
+    set_seed(params['seed'])  # for reproducibility
 
+    # If you don't want to use Wandb (Weights&Biases) logging you may remove all wandb related code.
+    # wandb_mode=disabled will suppress logging (but will throw errors if wandb is not installed in the environment).
     # wandb.login()
-    project = "RT+ML_Dataset_paper"
-    # if 'longwave' in params['target_type']:
-    #    project += '_LongWave'
+    project = "ClimART"
     run = wandb.init(
         project=project,
         settings=wandb.Settings(start_method='fork'),
-        tags=['random-train-batches'],
-        entity="ecc-mila7",
+        tags=[],
+        #  entity="",
         name=params['wandb_name'],
-        group=params['ID'], reinit=True, mode=other_args.wandb_mode,
-        id=params['wandb_ID'], resume="allow"
+        group=params['ID'],
+        mode=other_args.wandb_mode,
+        id=params['wandb_ID'], resume="allow", reinit=True
     )
 
     spatial_dim, in_dim = get_data_dims(params['exp_type'])
 
     if is_gnn(params['model']) or is_graph_net(params['model']):
+        # cp maps the data to a graph structure needed for a GCN or GraphNet
         cp = ColumnPreprocesser(
             n_layers=spatial_dim[LAYERS], input_dims=in_dim, **params['preprocessing_dict']
         )
@@ -56,26 +58,41 @@ def main(params, net_params, other_args, only_final_eval=False, *args, **kwargs)
         spatial_normalization_in=params['spatial_normalization_in'],
         log_scaling=params['log_scaling'],
     )
+    # Training set:
     train_years = year_string_to_list(params['train_years'])
-    assert all([y in TRAIN_YEARS for y in train_years])
-    train_set = RT_HdF5_Dataset(years=train_years, name='Train',
-                                output_normalization=params['out_normalize'],
-                                spatial_normalization_out=params['spatial_normalization_out'],
-                                load_h5_into_mem=params['load_train_into_mem'],
-                                **dataset_kwargs)
-    val_set = RT_HdF5_Dataset(years=year_string_to_list(params['validation_years']), name='Val',
-                              output_normalization=None,
-                              load_h5_into_mem=params['load_val_into_mem'],
-                              **dataset_kwargs)
+    assert all([y in TRAIN_YEARS for y in train_years]), f"All years in --train_years must be in {TRAIN_YEARS}!"
+    train_set = ClimART_HdF5_Dataset(years=train_years, name='Train',
+                                     output_normalization=params['out_normalize'],
+                                     spatial_normalization_out=params['spatial_normalization_out'],
+                                     load_h5_into_mem=params['load_train_into_mem'],
+                                     **dataset_kwargs)
+    # Validation set:
+    val_set = ClimART_HdF5_Dataset(years=year_string_to_list(params['validation_years']), name='Val',
+                                   output_normalization=None,
+                                   load_h5_into_mem=params['load_val_into_mem'],
+                                   **dataset_kwargs)
 
+    # Main Present-day Test Set(s):
+    # To compute metrics for each test year, we will have a separate dataloader for each of the test years (2007-14).
     test_names = [f'Test_{test_year}' for test_year in TEST_YEARS]
     test_sets = [
-        RT_HdF5_Dataset(years=[test_year], name=test_name, output_normalization=None, **dataset_kwargs)
+        ClimART_HdF5_Dataset(years=[test_year], name=test_name, output_normalization=None, **dataset_kwargs)
         for test_year, test_name in zip(TEST_YEARS, test_names)
     ]
-    ood_test_set = RT_HdF5_Dataset(years=OOD_PRESENT_YEARS, name='OOD Test',
-                                   output_normalization=None,
-                                   **dataset_kwargs)
+    # OOD Test Sets:
+    #   This will load the 1991 OOD test year, that accounts for Mt. Pinatubo eruptions.
+    #   It is challenging for clear-sky conditions in particular
+    #  --> To load the future or historic OOD test sets, use years=OOD_FUTURE_YEARS or OOD_HISTORIC_YEARS
+    ood_test_sets, ood_testloader_names = [], []
+    if other_args.test_ood_1991:
+        ood_test_sets += [ClimART_HdF5_Dataset(years=OOD_PRESENT_YEARS, name='OOD Test', **dataset_kwargs)]
+        ood_testloader_names += ['Test_OOD']
+    if other_args.test_ood_historic:
+        ood_test_sets += [ClimART_HdF5_Dataset(years=OOD_HISTORIC_YEARS, name='Historic Test', **dataset_kwargs)]
+        ood_testloader_names += ['Historic']
+    if other_args.test_ood_future:
+        ood_test_sets += [ClimART_HdF5_Dataset(years=OOD_FUTURE_YEARS, name='Future Test', **dataset_kwargs)]
+        ood_testloader_names += ['Future']
 
     net_params['input_dim'] = train_set.input_dim
     net_params['spatial_dim'] = train_set.spatial_dim
@@ -86,12 +103,10 @@ def main(params, net_params, other_args, only_final_eval=False, *args, **kwargs)
     params['training_set_size'] = len(train_set)
     output_normalizer = train_set.output_normalizer
     output_postprocesser = train_set.output_variable_splitter
-    # if params['train_on_raw_targets']:
-    #    train_set.set_normalizer(data_type=OUTPUT, new_normalizer=None)
+
     if not isinstance(output_normalizer, Normalizer):
         log.info('Initializing out layer bias to output train dataset mean!')
         params['output_bias_mean_init'] = True
-        # out_layer_bias = np.array([267.87377 for _ in range(50)] + [53.5887 for _ in range(50)])
         out_layer_bias = get_flux_mean()
     else:
         params['output_bias_mean_init'] = False
@@ -108,7 +123,6 @@ def main(params, net_params, other_args, only_final_eval=False, *args, **kwargs)
     if cp is not None:
         trainer_kwargs['column_preprocesser'] = cp
 
-    print(net_params)
     trainer = get_trainer(**trainer_kwargs)
 
     dataloader_kwargs = {'pin_memory': True, 'num_workers': params['workers']}
@@ -119,23 +133,21 @@ def main(params, net_params, other_args, only_final_eval=False, *args, **kwargs)
     testloaders = [
         DataLoader(test_set, batch_size=eval_batch_size, **dataloader_kwargs) for test_set in test_sets
     ]
-    ood_testloader = DataLoader(ood_test_set, batch_size=eval_batch_size, **dataloader_kwargs)
+    ood_testloaders = [
+        DataLoader(test_set, batch_size=eval_batch_size, **dataloader_kwargs) for test_set in ood_test_sets
+    ]
 
-
-    # testloaders = [testloader, ood_testloader]
-    # testloader_names = ['Test', 'OOD test']
-    wandb.config.update({**net_params, **params})  # **train_set.vars_used_or_not},
+    wandb.config.update({**net_params, **params})
     if not only_final_eval:
         best_valid = trainer.fit(trainloader, valloader,
                                  hyper_params=params,
                                  testloader=testloaders,
                                  testloader_names=test_names,
-                                 ood_testloader=ood_testloader,
+                                 ood_testloader=ood_testloaders,
                                  *args, **kwargs)
         wandb.log({'Final/Best_Val_MAE': best_valid})
         log.info(f" Testing the best model as measured by validation performance (best={best_valid:.3f})")
 
-    train_set.close()
     del train_set, trainloader, valloader
 
     if other_args.save_model_to_wandb in [True, 'true', 'True'] and not only_final_eval:
@@ -152,17 +164,12 @@ def main(params, net_params, other_args, only_final_eval=False, *args, **kwargs)
     )
     wandb.log(final_test_stats)
     final_ood_stats = trainer.test(
-        testloaders=[ood_testloader],
-        testloader_names=["Final/Test_OOD"], **final_test_kwargs
+        testloaders=ood_testloaders,
+        testloader_names=[f'Final/{name}' for name in ood_testloader_names], **final_test_kwargs
     )
     wandb.log(final_ood_stats)
-    # for k, val in final_ood_stats.items():
-    #    if isinstance(val, float):
-    #        wandb.run.summary[k] = val
-
     run.finish()
-    for dset in [val_set, ood_test_set] + test_sets:
-        dset.close()
+
 
 if __name__ == '__main__':
     logging.basicConfig()
@@ -173,7 +180,8 @@ if __name__ == '__main__':
             params, net_params, other_args
         )
     else:
-        print('--------------------> Resuming training of', other_args.resume_training_file)
+        # Resume training from a model checkpoint
+        log.info(' --------------------> Resuming training of', other_args.resume_training_file)
         saved_model = torch.load(other_args.resume_training_file)
 
         params_resume = saved_model['hyper_params']

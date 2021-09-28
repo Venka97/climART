@@ -10,7 +10,7 @@
 
 ### Using deep learning to optimise radiative transfer calculations.
 
-Abstract:   *Numerical simulations of Earth's weather and climate require substantial amounts of computation. This has led to a growing interest in replacing subroutines that explicitly compute physical processes with approximate machine learning (ML) methods that are fast at inference time. Within weather and climate models, atmospheric radiative transfer (RT) calculations are especially expensive.  This has made them a popular target for neural network-based emulators. However, prior work is hard to compare due to the lack of a comprehensive dataset and standardized best practices for ML benchmarking. To fill this gap, we build a large dataset, ClimART, with more than **10 million** samples from present, pre-industrial, and future climate conditions}, based on the Canadian Earth System Model.
+Abstract:   *Numerical simulations of Earth's weather and climate require substantial amounts of computation. This has led to a growing interest in replacing subroutines that explicitly compute physical processes with approximate machine learning (ML) methods that are fast at inference time. Within weather and climate models, atmospheric radiative transfer (RT) calculations are especially expensive.  This has made them a popular target for neural network-based emulators. However, prior work is hard to compare due to the lack of a comprehensive dataset and standardized best practices for ML benchmarking. To fill this gap, we build a large dataset, ClimART, with more than **10 million** samples from present, pre-industrial, and future climate conditions, based on the Canadian Earth System Model.
 ClimART poses several methodological challenges for the ML community, such as multiple out-of-distribution test sets, underlying domain physics, and a trade-off between accuracy and inference speed. We also present several novel baselines that indicate shortcomings of datasets and network architectures used in prior work.*
 
 Contact: Venkatesh Ramesh [(venka97 at gmail)](mailto:venka97@gmail.com) or Salva Rühling Cachay [(salvaruehling at gmail)](mailto:salvaruehling@gmail.com). <br>
@@ -93,17 +93,21 @@ The complete list of variables in the dataset is as follows: </br>
 --weight_decay: Weight decay to use for the optimization process.
 --batch_size: Batch size for training.
 --act: Activation function (e.g. ReLU, GeLU, ...).
+--hidden_dims: The hidden dimensionalities to use for the model (e.g. 128 128).
 --dropout: Dropout rate to use for parameters.
 --loss: Loss function to train the model with (MSE recommended).
 --in_normalize: Select how to normalize the data (Z, min_max, None). Z-scaling is recommended.
---train_years: The years to select for training the data. (Either individual years 1997+1991 or range 1991-1996)
---validation_years: The years to select for validating the data. Recommended: "2005" or "2005-06" 
 --net_norm: Normalization scheme to use in the model (batch_norm, layer_norm, instance_norm)
---gap: Use global average pooling in-place of MLP to get output (CNN only).
 --gradient_clipping: If "norm", the L2-norm of the parameters is clipped the value of --clip. Otherwise no clipping.
 --clip: Value to clip the gradient to while training.
---hidden_dims: The hidden dimension to use for model.
 --val_metric: Which metric to use for saving the 'best' model based on validation set. Default: "RMSE"
+--gap: Use global average pooling in-place of MLP to get output (CNN only).
+--learn_edge_structure: If --model=='GCN': Whether to use a L-GCN (if set) with learnable adjacency matrix, or a GCN.
+--train_years: The years to select for training the data. (Either individual years 1997+1991 or range 1991-1996)
+--validation_years: The years to select for validating the data. Recommended: "2005" or "2005-06" 
+--test_ood_1991: Whether to load and test on OOD data from 1991 (Mt. Pinatubo; especially challenging for clear-sky conditions)
+--test_ood_historic: Whether to load and test on historic/pre-industrial OOD data from 1850-52.
+--test_ood_future: Whether to load and test on future OOD data from 2097-99 (under a changing climate/radiative forcing)
 --wandb_model: If "online", Weights&Biases logging. If "disabled" no logging.
 --expID: A unique ID for the experiment if using logging.
 
@@ -142,7 +146,7 @@ python main.py --model "GCN+Readout" --exp_type "pristine" --target_type "shortw
   --batch_size 128 --lr 2e-4 --optim Adam --weight_decay 1e-6 --scheduler "expdecay" \
   --in_normalize "Z" --net_norm "layer_norm" --dropout 0.0 --act "GELU" --epochs 100 \
   --preprocessing "mlp_projection" --projector_net_normalization "layer_norm" --graph_pooling "mean"\
-  --residual --improved_self_loops --drop_last_level \
+  --residual --improved_self_loops \
   --gradient_clipping "norm" --clip 1.0 --hidden_dims 128 128 128 \  
   --train_years "1990+1999+2003" --validation_years "2005" \
   --wandb_mode disabled
@@ -162,5 +166,6 @@ This work is made available under [Attribution 4.0 International (CC BY 4.0)](ht
 ## Development
 
 This repository is currently under active development and you may encounter bugs with some functionality. 
+Any feedback, extensions & suggestions are welcome!
 Pull requests relating to bugs will be accepted however, we don't accept outside code contributions in 
 terms of new features as this repository is a replication of the code related with the paper. 
