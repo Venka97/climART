@@ -6,10 +6,8 @@ import pandas as pd
 DF_MAPPING = Callable[[pd.DataFrame], pd.DataFrame]
 
 exp_to_wandb_project = {
-    'pristine': "RT+ML_Dataset_paper",  # 'RT+ML_PRISTINEexp_SHORTWAVEtargets_logscaled_alltr_allval_15test',
-    'clear_sky': "RT+ML_Dataset_paper",
-    'all_sky': None,
-
+    'pristine': "ClimART",
+    'clear_sky': "ClimART"
 }
 
 
